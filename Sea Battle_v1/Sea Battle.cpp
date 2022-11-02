@@ -13,9 +13,9 @@ void addShip_Rand(char gf[10][10], int sizeShip);
 int giveRand_Number(int size);
 void fillGamefield(char gf[10][10]);
 void newGame(char gf_1[10][10], char gf_2[10][10], char gf_3[10][10]);
-void Player_PC_moves(char gf_1[10][10], char gf_2[10][10], char gf_3[10][10]);
+bool Player_PC_moves(char gf_1[10][10], char gf_2[10][10], char gf_3[10][10]);
 bool playerTurn(char gf_1[10][10], char gf_2[10][10], char gf_3[10][10]);
-bool pcTurn(char gf_1[10][10]);
+bool pcTurn(char gf1[10][10]);
 list<Point> findPosition_forPC(char gf_1[10][10]);
 void newTurn(char gf_1[10][10], char gf_3[10][10], int numTurn);
 bool victoryConditions(char gf_1[10][10], char gf_2[10][10]);
@@ -23,22 +23,16 @@ int main() {
     int flag = 2;
     char Gamefield_1[10][10], Gamefield_2[10][10], Gamefield_3[10][10];
     // field player         enemy field          player's turns field
+
     newGame(Gamefield_1, Gamefield_2, Gamefield_3);
     Player_PC_moves(Gamefield_1, Gamefield_2, Gamefield_3);
     system("pause");
-    if (!victoryConditions(Gamefield_1, Gamefield_2)) {
-        system("cls");
-        cout << "Game over";
-        return 0;
-    }
     while (victoryConditions(Gamefield_1, Gamefield_2)) {
         newTurn(Gamefield_1, Gamefield_3, flag);
         Player_PC_moves(Gamefield_1, Gamefield_2, Gamefield_3);
         system("pause");
         flag++;
     }
-    system("cls");
-    cout << "Game over";
     return 0;
 }
 void createGamefield(char gf[10][10]) {
@@ -146,21 +140,34 @@ void newGame(char gf_1[10][10], char gf_2[10][10], char gf_3[10][10]) {
     printGamefield(gf_1, 1);
     printGamefield(gf_3, 2);
 }
-void Player_PC_moves(char gf_1[10][10], char gf_2[10][10], char gf_3[10][10]) {
+bool Player_PC_moves(char gf_1[10][10], char gf_2[10][10], char gf_3[10][10]) {
     while (playerTurn(gf_1, gf_2, gf_3)) {
-        if (!victoryConditions(gf_1, gf_2)) break;
-        cout << endl << "Hit again" << endl;
-        printGamefield(gf_3, 2);
+        if (!victoryConditions(gf_1, gf_2)) {
+            system("cls");
+            cout << "You win!!!" << endl;
+            return 1;
+        }
+         else {
+            cout << endl << "Hit again" << endl;
+            printGamefield(gf_3, 2);
+        }
     }
     printGamefield(gf_3, 2);
     while (pcTurn(gf_1)) {
-        if (!victoryConditions(gf_1, gf_2)) break;
-        cout << endl << "PC hit again" << endl;
-        printGamefield(gf_1, 1);
-        printGamefield(gf_3, 3);
+        if (!victoryConditions(gf_1, gf_2)) {
+            system("cls");
+            cout << "PC win!!!" << endl;
+            return 1;
+        }
+        else {
+            cout << endl << "PC hit again" << endl;
+            printGamefield(gf_1, 1);
+            printGamefield(gf_3, 3);
+        }
     }
     printGamefield(gf_1, 1);
     printGamefield(gf_3, 3);
+    return 0;
 }
 bool playerTurn(char gf_1[10][10], char gf_2[10][10], char gf_3[10][10])
 {
